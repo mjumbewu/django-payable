@@ -1,8 +1,11 @@
+{% load humanize %}
+
 <!DOCTYPE html>
 
 <html>
   <head>
     <title>Invoice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ STATIC_URL }}styles/invoice.css">
   </head>
 
@@ -53,9 +56,9 @@
           {% for item in invoice.items.all %}
           <tr>
             <td class="invoice-item-description">{{ item.description }}</td>
-            <td class="invoice-item-quantity">{{ item.quantity }} {{ item.units }}</td>
-            <td class="invoice-item-unitprice">${{ item.unit_price|floatformat:-2 }}</td>
-            <td class="invoice-item-amount">${{ item.amount|floatformat:-2 }}</td>
+            <td class="invoice-item-quantity">{{ item.quantity|intcomma }} {{ item.units }}</td>
+            <td class="invoice-item-unitprice">${{ item.unit_price|floatformat:-2|intcomma }}</td>
+            <td class="invoice-item-amount">${{ item.amount|floatformat:-2|intcomma }}</td>
           </tr>
           {% if item.notes %}
           <tr>
@@ -68,17 +71,17 @@
 
       <table class="invoice-payment-info">
         <tbody>
-          <tr>
+          <tr class="invoice-total">
             <td>Total</td>
-            <td>${{ invoice.total_amount|floatformat:-2 }}</td>
+            <td>${{ invoice.total_amount|floatformat:-2|intcomma }}</td>
           </tr>
-          <tr>
+          <tr class="invoice-amount-paid">
             <td>Amount Paid</td>
-            <td>${{ invoice.amount_paid|floatformat:-2 }}</td>
+            <td>${{ invoice.amount_paid|floatformat:-2|intcomma }}</td>
           </tr>
-          <tr>
+          <tr class="invoice-amount-due">
             <td>Amount Due</td>
-            <td>${{ invoice.amount_due|floatformat:-2 }}</td>
+            <td>${{ invoice.amount_due|floatformat:-2|intcomma }}</td>
           </tr>
         </tbody>
       </table>
