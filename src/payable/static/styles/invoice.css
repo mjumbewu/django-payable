@@ -225,6 +225,11 @@ a:hover {
 
 	.invoice-items thead td {
 		padding: 1px 0.5rem;
+		white-space: nowrap;
+	}
+
+	.invoice-item-quantity {
+		white-space: nowrap;
 	}
 
 	.invoice-items tbody td {
