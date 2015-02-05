@@ -10,8 +10,6 @@ html {
 
 body {
 	font-family: sans-serif;
-	padding-left: 1rem;
-	padding-right: 1rem;
 }
 
 table {
@@ -28,15 +26,7 @@ a:hover {
 }
 
 .invoice-wrapper {
-	max-width: 45rem;
-	min-height: 90%;
-	box-sizing: border-box;
-
-	margin: 1rem auto;
-	border: 1px solid black;
-	border-radius: 1rem;
 	padding: 1rem;
-	overflow: hidden;
 }
 
 .invoice-wrapper:after {
@@ -55,7 +45,7 @@ a:hover {
 	color: white;
 	background-color: #404040;
 	margin: -1rem -1rem 1rem -1rem;
-	padding: 0.5rem;
+	padding: 1rem;
 	text-align: center;
 	text-transform: uppercase;
 }
@@ -116,6 +106,10 @@ a:hover {
 
 .invoice-items thead td {
 	border-bottom: 1px solid silver;
+}
+
+.invoice-items thead td:last-child {
+	text-align: right;
 }
 
 .invoice-items tbody td {
@@ -185,5 +179,35 @@ a:hover {
 
 	.invoice-items tbody td:first-child {
 		padding-top: 0.5rem;
+	}
+}
+
+@media not screen {
+	.invoice-header:before {
+		color: silver;
+		background-color: white;
+	}
+}
+
+@media screen and (min-width: 400px) {
+	body {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+
+	.invoice-wrapper {
+		max-width: 45rem;
+		min-height: 90%;
+		box-sizing: border-box;
+
+		margin: 1rem auto;
+		border: 1px solid black;
+		border-radius: 1rem;
+		padding: 1rem;
+		overflow: hidden;
+	}
+
+	.invoice-header:before {
+		padding: 0.5rem;
 	}
 }
