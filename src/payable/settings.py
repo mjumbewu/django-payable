@@ -95,6 +95,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = 'staticfiles'
+
 
 # Payments
 # https://github.com/pydanny/dj-stripe
