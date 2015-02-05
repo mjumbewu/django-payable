@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Invoice</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}styles/invoice.css">
+  </head>
+
+  <body>
+    <div class="invoice-wrapper">
+      <header class="invoice-header">
+        <img src="{{ STATIC_URL }}images/poepublic.png" class="logo">
+        <div class="contact-info">
+          Mjumbe Poe<br>
+          1924 N. Darien St.<br>
+          Philadelphia, PA 19122<br>
+          <a href="tel:+12679700574">+1 (267) 970-0574</a><br>
+          <a href="mailto:payments@poepublic.com?subject=Invoice">payments@poepublic.com</a>
+      </header>
+
+      <section class="invoice-metainfo">
+        <div class="invoice-number">{{ invoice.number }}</div>
+
+        <div class="invoice-sent-date">
+          <time date="{{ invoice.sent_date|date:'c' }}">{{ invoice.sent_date|date }}</time>
+        </div>
+
+        <div class="invoice-due-date">
+          <time date="{{ invoice.due_date|date:'c' }}">{% if invoice.sent_date == invoice.due_date %}Upon Receipt{% else %}{{ invoice.due_date|date }}{% endif %}</time>
+        </div>
+      </section>
+
+      <div class="client-contact-info">
+        {% with r=invoice.recipient %}
+          {{ r.name }}<br>
+          {% if r.organization %}{{ r.organization }}<br>{% endif %}
+          {% if r.address %}{{ r.address|linebreaks }}<br>{% endif %}
+          {% if r.phone %}{{ r.phone }}<br>{% endif %}
+          {{ r.email }}
+        {% endwith %}
+      </div>
+
+      <table class="invoice-items">
+        <thead>
+          <tr>
+            <td>Description</td>
+            <td>Quantity</td>
+            <td>Unit Price</td>
+            <td>Amount</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in invoice.items.all %}
+          <tr>
+            <td class="invoice-item-description">{{ item.description }}</td>
+            <td class="invoice-item-quantity">{{ item.quantity }} {{ item.units }}</td>
+            <td class="invoice-item-unitprice">${{ item.unit_price|floatformat:-2 }}</td>
+            <td class="invoice-item-amount">${{ item.amount|floatformat:-2 }}</td>
+          </tr>
+          {% if item.notes %}
+          <tr>
+            <td class="invoice-item-notes" cols=4>{{ item.notes }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <table class="invoice-payment-info">
+        <tbody>
+          <tr>
+            <td>Total</td>
+            <td>${{ invoice.total_amount|floatformat:-2 }}</td>
+          </tr>
+          <tr>
+            <td>Amount Paid</td>
+            <td>${{ invoice.amount_paid|floatformat:-2 }}</td>
+          </tr>
+          <tr>
+            <td>Amount Due</td>
+            <td>${{ invoice.amount_due|floatformat:-2 }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <section class="invoice-notes">
+        <header>
+          Additional Notes
+        </header>
+        <p>{{ invoice.additional_notes|linebreaks }}</p>
+      </section>
+    </div>
+  </body>
+</html>

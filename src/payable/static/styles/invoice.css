@@ -1,0 +1,83 @@
+html {
+	font-size: 16px;
+}
+
+body {
+	font-family: sans-serif;
+}
+
+.invoice-wrapper {
+	max-width: 45rem;
+	margin: 0 auto;
+}
+
+.invoice-header {
+	font-size: 0.8rem;
+	margin-bottom: 3rem;
+}
+
+.invoice-header .logo {
+	float: right;
+	height: 5rem;
+}
+
+.invoice-metainfo {
+	float: right;
+	clear: right;
+}
+
+.invoice-metainfo div:before {
+	font-size: 0.8rem;
+	font-weight: bold;
+}
+
+.invoice-number:before {
+	content: 'Invoice #: ';
+}
+
+.invoice-sent-date:before {
+	content: 'Date: ';
+}
+
+.invoice-due-date:before {
+	content: 'Due: ';
+}
+
+.invoice-items {
+	clear: both;
+	margin-top: 3rem;
+	margin-bottom: 1rem;
+	width: 100%;
+}
+
+.invoice-items thead {
+	font-size: 0.8rem;
+	font-weight: bold;
+}
+
+.invoice-payment-info {
+	float: right;
+	margin-bottom: 3rem;
+	font-weight: bold;
+}
+
+.invoice-payment-info td:first-child {
+	font-size: 0.8rem;
+	text-align: right;
+}
+
+.invoice-payment-info td:first-child:after {
+	content: ':';
+}
+
+.invoice-notes {
+	clear: both;
+	margin-top: 3rem;
+}
+
+.invoice-notes header {
+	text-transform: uppercase;
+	font-size: 0.8rem;
+	font-weight: bold;
+	border-bottom: 1px solid black;
+}

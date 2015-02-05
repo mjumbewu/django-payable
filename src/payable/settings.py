@@ -59,7 +59,7 @@ WSGI_APPLICATION = 'payable.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DEFAULT_DATABASE_URL = 'sqlite://' + os.path.abspath(os.path.join(BASE_DIR, 'db.sqlite3'))
+DEFAULT_DATABASE_URL = 'sqlite:///' + os.path.abspath(os.path.join(BASE_DIR, 'db.sqlite3'))
 
 import dj_database_url
 DATABASES = {'default': dj_database_url.config(default=DEFAULT_DATABASE_URL)}
