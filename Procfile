@@ -1,0 +1,1 @@
+web: PYTHONPATH=$PYTHONPATH:src waitress-serve --port=$PORT payable.wsgi:application
