@@ -238,6 +238,11 @@ a:hover {
 		color: silver;
 		background-color: white;
 	}
+
+	.invoice-payment form,
+	.invoice-payment .alternative {
+		display: none;
+	}
 }
 
 @media screen and (min-width: 400px) {

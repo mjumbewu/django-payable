@@ -64,7 +64,7 @@
           {% for item in invoice.items.all %}
           <tr>
             <td class="invoice-item-description">{{ item.description }}</td>
-            <td class="invoice-item-quantity">{{ item.quantity|intcomma }} {{ item.units }}</td>
+            <td class="invoice-item-quantity">{{ item.quantity|floatformat:-2|intcomma }} {{ item.units }}</td>
             <td class="invoice-item-unitprice">${{ item.unit_price|floatformat:-2|intcomma }}</td>
             <td class="invoice-item-amount">${{ item.amount|floatformat:-2|intcomma }}</td>
           </tr>
@@ -121,7 +121,7 @@
           <input type="hidden" name="statement_descriptor" value="POE PUBLIC">
         </form>
 
-        or
+        <span class="alternative">or</span>
 
         <div>
           Send checks payable<br>to <em>Mjumbe Poe</em> to:<br>
