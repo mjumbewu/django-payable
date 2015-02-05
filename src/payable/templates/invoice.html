@@ -21,6 +21,14 @@
           <a href="mailto:payments@poepublic.com?subject=Invoice">payments@poepublic.com</a>
       </header>
 
+      {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</li>
+          {% endfor %}
+      </ul>
+      {% endif %}
+
       <section class="invoice-metainfo">
         <div class="invoice-number">{{ invoice.number }}</div>
 
@@ -91,6 +99,39 @@
           Additional Notes
         </header>
         <p>{{ invoice.additional_notes|linebreaks }}</p>
+      </section>
+
+      <section class="invoice-payment">
+        {% if invoice.amount_due == 0 %}
+        <div class="invoice-paid">Paid</div>
+        {% else %}
+        <form action="/charge" method="POST">{% csrf_token %}
+          <script
+            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="{{ settings.STRIPE_PUBLIC_KEY }}"
+            data-image="{{ STATIC_URL}}images/poepublic-bonw-128.png"
+            data-name="{{ invoice.recipient.organization }}"
+            data-description="Invoice"
+            data-amount="{{ stripe_price }}">
+          </script>
+
+          <input type="hidden" name="invoice_id" value="{{ invoice.id }}">
+          <input type="hidden" name="access_code" value="{{ invoice.access_code }}">
+          <input type="hidden" name="amount_paid" value="{{ invoice.amount_due }}">
+          <input type="hidden" name="statement_descriptor" value="POE PUBLIC">
+        </form>
+
+        or
+
+        <div>
+          Send checks payable<br>to <em>Mjumbe Poe</em> to:<br>
+          <small><strong>
+            Mjumbe Poe<br>
+            1924 North 10th Street<br>
+            Philadelphia, PA 19122
+          </strong></small>
+        </div>
+        {% endif %}
       </section>
     </div>
   </body>

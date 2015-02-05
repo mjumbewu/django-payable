@@ -1,3 +1,4 @@
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.db import models
 import uuid
 
@@ -10,7 +11,7 @@ class Client (models.Model):
     email = models.TextField()
 
     def __str__(self):
-        return "{} ({})".format(self.name, self.organization)
+        return "{} ({})".format(self.organization, self.name)
 
 
 class InvoiceItem (models.Model):
@@ -30,6 +31,16 @@ class InvoiceItem (models.Model):
         return self.description
 
 
+class InvoicePayment (models.Model):
+    invoice = models.ForeignKey('Invoice', related_name='payments')
+    paid_at = models.DateTimeField()
+    amount = models.DecimalField(decimal_places=2, max_digits=12)
+    stripe_charge_id = models.TextField(blank=True)
+
+    def __str__(self):
+        return 'Paid ${} {}'.format(self.amount, naturaltime(self.paid_at))
+
+
 class Invoice (models.Model):
     number = models.TextField(blank=True)
     sent_date = models.DateField()
@@ -38,10 +49,9 @@ class Invoice (models.Model):
     recipient = models.ForeignKey('Client')
 
     # Reverse relation to invoice items
+    # Reverse relation to invoice payments
 
     discount = models.DecimalField(decimal_places=2, max_digits=12, blank=True, default=0)
-    amount_paid = models.DecimalField(decimal_places=2, max_digits=12, blank=True, default=0)
-
     additional_notes = models.TextField(blank=True)
 
     access_code = models.TextField(blank=True)
@@ -51,11 +61,15 @@ class Invoice (models.Model):
         return sum((item.amount or 0) for item in self.items.all())
 
     @property
+    def amount_paid(self):
+        return sum((payment.amount or 0) for payment in self.payments.all())
+
+    @property
     def amount_due(self):
-        return self.total_amount - (self.discount or 0) - (self.amount_paid or 0)
+        return self.total_amount - (self.discount or 0) - self.amount_paid
 
     def __str__(self):
-        return "{} -- {}, {}".format(self.number, self.recipient, self.total_amount)
+        return "Invoice for {} on {} (${:,.2f})".format(self.recipient.organization, self.sent_date, self.total_amount)
 
     def save(self):
         super().save()
