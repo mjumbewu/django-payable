@@ -118,6 +118,14 @@ a:hover {
 	padding: 0.5rem;
 }
 
+.invoice-items tbody tr td.invoice-item-notes {
+	font-style: italic;
+	font-size: 0.8rem;
+	color: gray;
+	margin-top: -0.7rem;
+	padding-top: 0;
+}
+
 .invoice-item-amount {
 	text-align: right;
 }
