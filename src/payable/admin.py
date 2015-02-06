@@ -40,6 +40,8 @@ class InvoicePaymentInline (admin.TabularInline):
 
 
 class InvoiceAdmin (admin.ModelAdmin):
+    list_display = ['__str__', 'has_been_seen', 'is_paid']
+
     formfield_overrides = {
         models.TextField: {'widget': forms.TextInput},
     }
@@ -52,7 +54,7 @@ class InvoiceAdmin (admin.ModelAdmin):
             return '(save to preview)'
 
         return format_html(
-            '''<a href="{}?key={}" target="_blank">Open in new window &#8663</a>''',  # 8663 is the ⇗ character
+            '''<a href="{}?key={}&peek" target="_blank">Open in new window &#8663</a>''',  # 8663 is the ⇗ character
             reverse('view-invoice', kwargs={'pk': '{:0>5}'.format(obj.pk)}),
             obj.access_code
         )

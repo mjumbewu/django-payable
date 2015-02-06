@@ -102,7 +102,7 @@
       </section>
 
       <section class="invoice-payment">
-        {% if invoice.amount_due == 0 %}
+        {% if invoice.is_paid %}
         <div class="invoice-paid">Paid</div>
         {% else %}
         <form action="/charge" method="POST">{% csrf_token %}

@@ -23,7 +23,6 @@ class InvoiceItem (models.Model):
     unit_price = models.DecimalField(decimal_places=2, max_digits=12)
     notes = models.TextField(blank=True)
 
-    @property
     def amount(self):
         return (self.quantity or 0) * (self.unit_price or 0)
 
@@ -47,6 +46,7 @@ class Invoice (models.Model):
     due_date = models.DateField()
 
     recipient = models.ForeignKey('Client')
+    has_been_seen = models.BooleanField(blank=True, default=False)
 
     # Reverse relation to invoice items
     # Reverse relation to invoice payments
@@ -56,20 +56,21 @@ class Invoice (models.Model):
 
     access_code = models.TextField(blank=True)
 
-    @property
     def total_amount(self):
-        return sum((item.amount or 0) for item in self.items.all())
+        return sum((item.amount() or 0) for item in self.items.all())
 
-    @property
     def amount_paid(self):
         return sum((payment.amount or 0) for payment in self.payments.all())
 
-    @property
     def amount_due(self):
-        return self.total_amount - (self.discount or 0) - self.amount_paid
+        return self.total_amount() - (self.discount or 0) - self.amount_paid()
+
+    def is_paid(self):
+        return self.amount_due() == 0
+    is_paid.boolean = True
 
     def __str__(self):
-        return "Invoice for {} on {} (${:,.2f})".format(self.recipient.organization, self.sent_date, self.total_amount)
+        return "Invoice for {} on {} (${:,.2f})".format(self.recipient.organization, self.sent_date, self.total_amount())
 
     def save(self):
         super().save()

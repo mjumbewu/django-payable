@@ -17,7 +17,12 @@ def view_invoice(request, pk):
     invoice = get_object_or_404(
         Invoice.objects.prefetch_related('items', 'payments'),
         pk=pk, access_code=access_code)
-    context = {'object': invoice, 'invoice': invoice, 'stripe_price': invoice.amount_due*100 }
+
+    if 'peek' not in request.GET:
+        invoice.has_been_seen = True
+        invoice.save()
+
+    context = {'object': invoice, 'invoice': invoice, 'stripe_price': invoice.amount_due() * 100 }
     return render(request, 'invoice.html', context)
 
 def charge_card(request):
@@ -33,7 +38,7 @@ def charge_card(request):
 
     try:
         charge = stripe.Charge.create(
-            amount=int(invoice.amount_due * 100),
+            amount=int(invoice.amount_due() * 100),
             currency='usd',
             card=stripe_token,
             description=str(invoice),
