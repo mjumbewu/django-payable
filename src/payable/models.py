@@ -5,12 +5,20 @@ import uuid
 
 
 class ClonableMixin:
+    def copy_relations_to(self, clone, commit=True):
+        assert clone.pk is not None, 'You must save the clone before copying related objects.'
+        pass
+
     def copy(self, commit=True, **overrides):
         clone = copy(self)
         clone.pk = None
 
+        for attr, value in overrides.items():
+            setattr(clone, attr, value)
+
         if commit:
             clone.save()
+            self.copy_relations_to(clone)
 
         return clone
 
@@ -85,27 +93,23 @@ class Invoice (ClonableMixin, models.Model):
     def __str__(self):
         return "Invoice for {} on {} (${:,.2f})".format(self.recipient.organization, self.sent_date, self.total_amount())
 
+    def copy_relations_to(self, clone, commit=True):
+        # Only copy the items, not the payments.
+        for item in self.items.all():
+            item.clone(commit, invoice=clone)
+
     def copy(self, commit=True, **overrides):
-        clone = super().copy(commit=False, **overrides)
-
-        clone.number = None
-
-        if commit:
-            clone.save()
-
+        clone = super().copy(commit=commit, number=None, access_code=None)
         return clone
 
-    def save(self):
-        super().save()
-
-        dirty = False
-        if not self.number:
-            self.number = '{}-{:0>5}'.format(self.recipient.abbreviation.upper(), self.id)
-            dirty = True
-
+    def save(self, *args, **kwargs):
         if not self.access_code:
             self.access_code = uuid.uuid4()
-            dirty = True
 
-        if dirty:
+        super().save(*args, **kwargs)
+
+        if not self.number:
+            # We use the id to determine the invoice number, so it has to come
+            # after the save.
+            self.number = '{}-{:0>5}'.format(self.recipient.abbreviation.upper(), self.id)
             self.save()
