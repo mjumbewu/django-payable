@@ -44,7 +44,7 @@ class InvoicePaymentInline (admin.TabularInline):
 
 
 class InvoiceAdmin (admin.ModelAdmin):
-    list_display = ['__str__', 'has_been_seen', 'is_paid']
+    list_display = ['_recipient_organization', '_recipient_name', '_recipient_email', 'total_amount', 'has_been_seen', 'is_paid']
 
     formfield_overrides = {
         models.TextField: {'widget': forms.TextInput},
@@ -52,6 +52,21 @@ class InvoiceAdmin (admin.ModelAdmin):
     inlines = [InvoiceItemInline, InvoicePaymentInline]
     raw_id_fields = ['recipient']
     readonly_fields = ['total_amount', 'amount_paid', 'amount_due', 'access_code', '_preview']
+
+    def _recipient_organization(self, obj):
+        return obj.recipient.organization
+    _recipient_organization.short_description = _('Organization')
+    _recipient_organization.admin_order_field = 'recipient__organization'
+
+    def _recipient_name(self, obj):
+        return obj.recipient.name
+    _recipient_name.short_description = _('Recipient name')
+    _recipient_name.admin_order_field = 'recipient__name'
+
+    def _recipient_email(self, obj):
+        return obj.recipient.email
+    _recipient_email.short_description = _('Recipient email')
+    _recipient_email.admin_order_field = 'recipient__email'
 
     def _preview(self, obj):
         if not obj.id:
