@@ -1,11 +1,24 @@
+from copy import copy
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.db import models
 import uuid
 
 
+class ClonableMixin:
+    def copy(self, commit=True, **overrides):
+        clone = copy(self)
+        clone.pk = None
+
+        if commit:
+            clone.save()
+
+        return clone
+
+
 class Client (models.Model):
     name = models.TextField()
     organization = models.TextField()
+    abbreviation = models.CharField(max_length=5, help_text='The abbreviation is used in invoice numbers.')
     address = models.TextField(blank=True)
     phone = models.TextField(blank=True)
     email = models.TextField()
@@ -14,7 +27,7 @@ class Client (models.Model):
         return "{} ({})".format(self.organization, self.name)
 
 
-class InvoiceItem (models.Model):
+class InvoiceItem (ClonableMixin, models.Model):
     invoice = models.ForeignKey('Invoice', related_name='items')
 
     description = models.TextField()
@@ -40,12 +53,12 @@ class InvoicePayment (models.Model):
         return 'Paid ${} {}'.format(self.amount, naturaltime(self.paid_at))
 
 
-class Invoice (models.Model):
+class Invoice (ClonableMixin, models.Model):
     number = models.TextField(blank=True)
     sent_date = models.DateField()
     due_date = models.DateField()
 
-    recipient = models.ForeignKey('Client')
+    recipient = models.ForeignKey('Client', related_name=Client)
     has_been_seen = models.BooleanField(blank=True, default=False)
 
     # Reverse relation to invoice items
@@ -72,12 +85,22 @@ class Invoice (models.Model):
     def __str__(self):
         return "Invoice for {} on {} (${:,.2f})".format(self.recipient.organization, self.sent_date, self.total_amount())
 
+    def copy(self, commit=True, **overrides):
+        clone = super().copy(commit=False, **overrides)
+
+        clone.number = None
+
+        if commit:
+            clone.save()
+
+        return clone
+
     def save(self):
         super().save()
 
         dirty = False
         if not self.number:
-            self.number = '{}-{:0>5}'.format(self.recipient.organization[:3], self.id)
+            self.number = '{}-{:0>5}'.format(self.recipient.abbreviation.upper(), self.id)
             dirty = True
 
         if not self.access_code:

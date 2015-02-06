@@ -9,6 +9,10 @@ from django.utils.translation import ugettext as _
 from .models import Client, Invoice, InvoiceItem, InvoicePayment
 
 
+class ClientAdmin (admin.ModelAdmin):
+    prepopulated_fields = {'abbreviation': ('organization',)}
+
+
 class InvoiceItemInline (admin.TabularInline):
     model = InvoiceItem
     formfield_overrides = {
@@ -62,5 +66,5 @@ class InvoiceAdmin (admin.ModelAdmin):
     _preview.short_description = _('Preview')
 
 
-admin.site.register(Client)
+admin.site.register(Client, ClientAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
