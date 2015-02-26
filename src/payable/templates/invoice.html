@@ -94,12 +94,14 @@
         </tbody>
       </table>
 
+      {% if invoice.additional_notes %}
       <section class="invoice-notes">
         <header>
           Additional Notes
         </header>
-        <p>{{ invoice.additional_notes|linebreaks }}</p>
+        {{ invoice.additional_notes|linebreaks }}
       </section>
+      {% endif %}
 
       <section class="invoice-payment">
         {% if invoice.is_paid %}
