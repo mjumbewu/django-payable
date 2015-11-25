@@ -83,3 +83,6 @@ class InvoiceAdmin (admin.ModelAdmin):
 
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
+
+admin.site.site_header = _('PoePublic Payable Administration')
+admin.site.site_title = _('PoePublic Payable')
