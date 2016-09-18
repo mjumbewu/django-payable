@@ -1,8 +1,8 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from .views import view_invoice, charge_card
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Examples:
     # url(r'^$', 'payable.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
@@ -11,4 +11,4 @@ urlpatterns = patterns('',
 
     url(r'^invoice/(?P<pk>\d*)/$', view_invoice, name='view-invoice'),
     url(r'^charge$', charge_card, name='charge-card'),
-)
+]
