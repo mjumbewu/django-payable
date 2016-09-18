@@ -66,7 +66,7 @@ class Invoice (ClonableMixin, models.Model):
     sent_date = models.DateField()
     due_date = models.DateField()
 
-    recipient = models.ForeignKey('Client', related_name=Client)
+    recipient = models.ForeignKey('Client', related_name='client')
     has_been_seen = models.BooleanField(blank=True, default=False)
 
     # Reverse relation to invoice items
