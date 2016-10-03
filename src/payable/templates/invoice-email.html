@@ -12,15 +12,13 @@
   <body>
     <div class="invoice-wrapper">
       <header class="invoice-header">
-        {% with invoicer=invoice.sender %}
         <img src="{{ STATIC_URL }}images/poepublic.png" class="logo">
         <div class="contact-info">
-          {{ invoicer.name }}<br>
-          {{ invoicer.address|linebreaksbr }}
-          {% if invoicer.phone %}<br><a href="tel:{{ invoicer.phone }}">{{ invoicer.phone }}</a>{% endif %}
-          {% if invoicer.email %}<br><a href="mailto:{{ invoicer.email }}?subject=Invoice">{{ invoicer.email }}</a>{% endif %}
-        </div>
-        {% endwith %}
+          Mjumbe Poe<br>
+          1913 N. Darien St.<br>
+          Philadelphia, PA 19122<br>
+          <a href="tel:+12679700574">+1 (267) 970-0574</a><br>
+          <a href="mailto:payments@poepublic.com?subject=Invoice">payments@poepublic.com</a>
       </header>
 
       {% if messages %}
@@ -66,13 +64,13 @@
           {% for item in invoice.items.all %}
           <tr>
             <td class="invoice-item-description">{{ item.description }}</td>
-            <td class="invoice-item-quantity">{{ item.quantity|floatformat:-2|intcomma }} {{ item.units }}</td>
+            <td class="invoice-item-quantity">{{ item.quantity|intcomma }} {{ item.units }}</td>
             <td class="invoice-item-unitprice">${{ item.unit_price|floatformat:-2|intcomma }}</td>
             <td class="invoice-item-amount">${{ item.amount|floatformat:-2|intcomma }}</td>
           </tr>
           {% if item.notes %}
           <tr>
-            <td class="invoice-item-notes" colspan="3">{{ item.notes }}</td>
+            <td class="invoice-item-notes" cols=4>{{ item.notes }}</td>
           </tr>
           {% endif %}
           {% endfor %}
@@ -96,17 +94,15 @@
         </tbody>
       </table>
 
-      {% if invoice.additional_notes %}
       <section class="invoice-notes">
         <header>
           Additional Notes
         </header>
-        {{ invoice.additional_notes|linebreaks }}
+        <p>{{ invoice.additional_notes|linebreaks }}</p>
       </section>
-      {% endif %}
 
       <section class="invoice-payment">
-        {% if invoice.is_paid %}
+        {% if invoice.amount_due == 0 %}
         <div class="invoice-paid">Paid</div>
         {% else %}
         <form action="/charge" method="POST">{% csrf_token %}
@@ -128,10 +124,10 @@
         <span class="alternative">or</span>
 
         <div>
-          Make checks payable<br>to <em>Mjumbe Poe</em> and send to:<br>
+          Send checks payable<br>to <em>Mjumbe Poe</em> to:<br>
           <small><strong>
             Mjumbe Poe<br>
-            1913 North Darien Street<br>
+            1924 North 10th Street<br>
             Philadelphia, PA 19122
           </strong></small>
         </div>

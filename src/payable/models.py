@@ -23,6 +23,32 @@ class ClonableMixin:
         return clone
 
 
+class Invoicer (models.Model):
+    name = models.TextField()
+    address = models.TextField(help_text='At least the address.')
+    phone = models.TextField(default='', blank=True)
+    email = models.EmailField(null=True, blank=True)
+    is_default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "{}\n{}".format(self.name, self.address)
+
+    def save(self, *args, **kwargs):
+        other_defaults = Invoicer.objects.filter(is_default=True).exclude(pk=self.pk)
+
+        if self.is_default:
+            # There should be no more than one default
+            if other_defaults.exists():
+                other_defaults.update(is_default=False)
+        else:
+            # There should be at least one default
+            if not other_defaults.exists():
+                self.is_default = True
+
+        return super(Invoicer, self).save(*args, **kwargs)
+
+
+
 class Client (models.Model):
     name = models.TextField()
     organization = models.TextField()
@@ -66,7 +92,8 @@ class Invoice (ClonableMixin, models.Model):
     sent_date = models.DateField()
     due_date = models.DateField()
 
-    recipient = models.ForeignKey('Client', related_name='client')
+    sender = models.ForeignKey('Invoicer', related_name='invoices')
+    recipient = models.ForeignKey('Client', related_name='invoices')
     has_been_seen = models.BooleanField(blank=True, default=False)
 
     # Reverse relation to invoice items

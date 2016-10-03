@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='invoice',
             name='recipient',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='client', to='payable.Client'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='invoices', to='payable.Client'),
         ),
     ]

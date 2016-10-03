@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.html import format_html
 from django.utils.translation import ugettext as _
-from .models import Client, Invoice, InvoiceItem, InvoicePayment
+from .models import Client, Invoice, InvoiceItem, InvoicePayment, Invoicer
 
 
 class ClientAdmin (admin.ModelAdmin):
@@ -81,8 +81,22 @@ class InvoiceAdmin (admin.ModelAdmin):
     _preview.short_description = _('Preview')
 
 
+class InvoicerAdmin (admin.ModelAdmin):
+    list_display = ['_display_name', 'is_default']
+
+    def _display_name(self, obj):
+        return format_html(
+            '''<strong>{}</strong><br>{}''',
+            obj.name,
+            obj.address.replace('\n', '<br>')
+        )
+    _display_name.allow_tags = True
+    _display_name.short_description = 'Display name'
+
+
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
+admin.site.register(Invoicer, InvoicerAdmin)
 
 admin.site.site_header = _('PoePublic Payable Administration')
 admin.site.site_title = _('PoePublic Payable')
