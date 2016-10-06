@@ -130,9 +130,8 @@
         <div>
           Make checks payable<br>to <em>Mjumbe Poe</em> and send to:<br>
           <small><strong>
-            Mjumbe Poe<br>
-            1913 North Darien Street<br>
-            Philadelphia, PA 19122
+            {{ invoicer.name }}<br>
+            {{ invoicer.address|linebreaksbr }}
           </strong></small>
         </div>
         {% endif %}
