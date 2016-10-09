@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}styles/invoice.css">
   </head>
 
+  {% with invoicer=invoice.sender %}
   <body>
     <div class="invoice-wrapper">
       <header class="invoice-header">
-        {% with invoicer=invoice.sender %}
         <img src="{{ STATIC_URL }}images/poepublic.png" class="logo">
         <div class="contact-info">
           {{ invoicer.name }}<br>
@@ -20,7 +20,6 @@
           {% if invoicer.phone %}<br><a href="tel:{{ invoicer.phone }}">{{ invoicer.phone }}</a>{% endif %}
           {% if invoicer.email %}<br><a href="mailto:{{ invoicer.email }}?subject=Invoice">{{ invoicer.email }}</a>{% endif %}
         </div>
-        {% endwith %}
       </header>
 
       {% if messages %}
@@ -138,4 +137,5 @@
       </section>
     </div>
   </body>
+  {% endwith %}
 </html>
