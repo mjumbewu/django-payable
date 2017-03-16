@@ -44,7 +44,7 @@ class InvoicePaymentInline (admin.TabularInline):
 
 
 class InvoiceAdmin (admin.ModelAdmin):
-    list_display = ['_recipient_organization', '_recipient_name', '_recipient_email', 'total_amount', 'has_been_seen', 'is_paid']
+    list_display = ['_recipient_organization', '_recipient_name', '_recipient_email', 'total_amount', 'has_been_sent', 'has_been_seen', 'is_paid']
 
     formfield_overrides = {
         models.TextField: {'widget': forms.TextInput},

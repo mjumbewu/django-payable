@@ -94,6 +94,7 @@ class Invoice (ClonableMixin, models.Model):
 
     sender = models.ForeignKey('Invoicer', related_name='invoices')
     recipient = models.ForeignKey('Client', related_name='invoices')
+    has_been_sent = models.BooleanField(blank=True, default=False)
     has_been_seen = models.BooleanField(blank=True, default=False)
 
     # Reverse relation to invoice items
