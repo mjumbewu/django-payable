@@ -2,6 +2,7 @@
 
 from django import forms
 from django.contrib import admin
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.html import format_html
@@ -45,6 +46,7 @@ class InvoicePaymentInline (admin.TabularInline):
 
 class InvoiceAdmin (admin.ModelAdmin):
     list_display = ['_recipient_organization', '_recipient_name', '_recipient_email', 'total_amount', 'has_been_sent', 'has_been_seen', 'is_paid']
+    actions = ['clone_multiple']
 
     formfield_overrides = {
         models.TextField: {'widget': forms.TextInput},
@@ -79,6 +81,12 @@ class InvoiceAdmin (admin.ModelAdmin):
         )
     _preview.allow_tags = True
     _preview.short_description = _('Preview')
+
+    def clone_multiple(modeladmin, request, queryset):
+        for invoice in queryset:
+            invoice.copy()
+        modeladmin.message_user(request, 'Successfully cloned {} invoices'.format(len(queryset)), level=messages.SUCCESS)
+    clone_multiple.short_description = _('Clone selected invoices')
 
 
 class InvoicerAdmin (admin.ModelAdmin):
