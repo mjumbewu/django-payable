@@ -124,7 +124,7 @@ class Invoice (ClonableMixin, models.Model):
     def copy_relations_to(self, clone, commit=True):
         # Only copy the items, not the payments.
         for item in self.items.all():
-            item.clone(commit, invoice=clone)
+            item.copy(commit, invoice=clone)
 
     def copy(self, commit=True, **overrides):
         clone = super().copy(commit=commit, number='', access_code='')
