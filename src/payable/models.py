@@ -127,7 +127,7 @@ class Invoice (ClonableMixin, models.Model):
             item.clone(commit, invoice=clone)
 
     def copy(self, commit=True, **overrides):
-        clone = super().copy(commit=commit, number=None, access_code=None)
+        clone = super().copy(commit=commit, number='', access_code='')
         return clone
 
     def save(self, *args, **kwargs):
