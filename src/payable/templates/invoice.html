@@ -1,4 +1,5 @@
 {% load humanize %}
+{% load static %}
 
 <!DOCTYPE html>
 
@@ -6,14 +7,14 @@
   <head>
     <title>Invoice</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{ STATIC_URL }}styles/invoice.css">
+    <link rel="stylesheet" href="{% static 'styles/invoice.css' %}">
   </head>
 
   {% with invoicer=invoice.sender %}
   <body>
     <div class="invoice-wrapper">
       <header class="invoice-header">
-        <img src="{{ STATIC_URL }}images/poepublic.png" class="logo">
+        <img src="{% static 'images/poepublic.png' %}" class="logo">
         <div class="contact-info">
           {{ invoicer.name }}<br>
           {{ invoicer.address|linebreaksbr }}
@@ -112,7 +113,7 @@
           <script
             src="https://checkout.stripe.com/checkout.js" class="stripe-button"
             data-key="{{ settings.STRIPE_PUBLIC_KEY }}"
-            data-image="{{ STATIC_URL}}images/poepublic-bonw-128.png"
+            data-image="{% static 'images/poepublic-bonw-128.png' %}"
             data-name="{{ invoice.recipient.organization }}"
             data-description="Invoice"
             data-amount="{{ stripe_price }}">
