@@ -6,10 +6,21 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+default_invoicer = None
 def ensure_default_invoicer(apps, schema):
+    global default_invoicer
     Invoicer = apps.get_model('payable', 'Invoicer')
-    assert Invoicer.objects.filter(pk=1).exists(), \
-        'You must have an invoicer with ID = 1.'
+
+    try:
+        default_invoicer = Invoicer.objects.get(is_default=True)
+    except Invoicer.DoesNotExist:
+        default_invoicer = Invoicer.objects.create(
+            name="Default Invoicer Name",
+            contact_info="1234 Sesame St\nNo Place, KS",
+            is_default=True,
+        )
+
+    print('successfully set default invoicer')
 
 class Migration(migrations.Migration):
 
