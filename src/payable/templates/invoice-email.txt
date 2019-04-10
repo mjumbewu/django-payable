@@ -1,0 +1,9 @@
+{% load humanize %}
+Hi {{ invoice.recipient.name }},
+
+Find linked below the invoice for the PROJECT_NAME. The amount is ${{ invoice.amount_due|floatformat:'-2'|intcomma }}, and you can find the full invoice, along with instructions for paying by check or card, at {{invoice_url}}.
+
+If you have any questions or any corrections that need to be made, please let me know.
+
+Thanks!
+- Mjumbe

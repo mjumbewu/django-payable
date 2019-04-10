@@ -1,12 +1,61 @@
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import render_to_string
 from django.utils.timezone import now
 from .models import Invoice, InvoicePayment
 import stripe
 import decimal
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def send_invoice(request, pk):
+    if request.method == 'POST':
+        sender = request.POST['sender']
+        recipients = [r.strip() for r in request.POST['recipients'].split(',')]
+        subject = request.POST['subject']
+        html = request.POST['html_body']
+        text = request.POST['text_body']
+        send_mail(
+            subject,
+            text,
+            sender,
+            recipients,
+            html_message=html,
+            fail_silently=False,
+        )
+        messages.success(request, 'Successfully sent invoice!')
+        return redirect('admin:payable_invoice_change', pk)
+
+    else:
+        invoice = get_object_or_404(
+            Invoice.objects.prefetch_related('items', 'payments'),
+            pk=pk)
+
+        invoice_path = reverse('view-invoice', args=[invoice.pk])
+        invoice_context = {
+            'invoice': invoice,
+            'invoice_url': request.build_absolute_uri(invoice_path) + '?key=' + invoice.access_code
+        }
+        invoice_subject = render_to_string('invoice-subject.txt', invoice_context)
+        invoice_html = render_to_string('invoice-email.html', invoice_context)
+        invoice_text = render_to_string('invoice-email.txt', invoice_context)
+
+        context = {
+            'invoice': invoice,
+            'invoice_subject': invoice_subject,
+            'invoice_text': invoice_text,
+            'invoice_html': invoice_html,
+
+            'opts': Invoice._meta,
+            'has_change_permission': True,
+            'original': invoice,
+        }
+        return render(request, 'send-invoice-form.html', context)
 
 def view_invoice(request, pk):
     try:

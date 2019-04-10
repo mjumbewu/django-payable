@@ -35,6 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django_object_actions',
 
     'payable',
 )
@@ -116,3 +117,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY", "<your publishable test key>")
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "<your secret test key>")
+
+
+# Email
+# https://docs.djangoproject.com/en/1.11/topics/email/
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

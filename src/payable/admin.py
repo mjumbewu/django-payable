@@ -5,8 +5,10 @@ from django.contrib import admin
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.shortcuts import redirect
 from django.utils.html import format_html
 from django.utils.translation import ugettext as _
+from django_object_actions import DjangoObjectActions
 from .models import Client, Invoice, InvoiceItem, InvoicePayment, Invoicer
 
 
@@ -44,9 +46,10 @@ class InvoicePaymentInline (admin.TabularInline):
     _stripe_charge.short_description = _('Stripe Charge')
 
 
-class InvoiceAdmin (admin.ModelAdmin):
+class InvoiceAdmin (DjangoObjectActions, admin.ModelAdmin):
     list_display = ['_recipient_organization', '_recipient_name', '_recipient_email', 'total_amount', 'has_been_sent', 'has_been_seen', 'is_paid']
     actions = ['clone_multiple']
+    change_actions = ['send']
 
     formfield_overrides = {
         models.TextField: {'widget': forms.TextInput},
@@ -87,6 +90,9 @@ class InvoiceAdmin (admin.ModelAdmin):
             invoice.copy()
         modeladmin.message_user(request, 'Successfully cloned {} invoices'.format(len(queryset)), level=messages.SUCCESS)
     clone_multiple.short_description = _('Clone selected invoices')
+
+    def send(self, request, obj):
+        return redirect('send-invoice', obj.id)
 
 
 class InvoicerAdmin (admin.ModelAdmin):

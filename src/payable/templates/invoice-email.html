@@ -1,138 +1,19 @@
 {% load humanize %}
-
-<!DOCTYPE html>
-
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Invoice</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{ STATIC_URL }}styles/invoice.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title></title>
   </head>
-
   <body>
-    <div class="invoice-wrapper">
-      <header class="invoice-header">
-        <img src="{{ STATIC_URL }}images/poepublic.png" class="logo">
-        <div class="contact-info">
-          Mjumbe Poe<br>
-          1913 N. Darien St.<br>
-          Philadelphia, PA 19122<br>
-          <a href="tel:+12679700574">+1 (267) 970-0574</a><br>
-          <a href="mailto:payments@poepublic.com?subject=Invoice">payments@poepublic.com</a>
-      </header>
+    <p style="text-align: right;"><img src="https://s3.amazonaws.com/mjumbewu-public/poepublic-small.png"></p>
+    <p>Hi {{ invoice.recipient.name }},</p>
 
-      {% if messages %}
-      <ul class="messages">
-          {% for message in messages %}
-          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</li>
-          {% endfor %}
-      </ul>
-      {% endif %}
+    <p>Find linked below the invoice for the PROJECT_NAME. The amount is <b>${{ invoice.amount_due|floatformat:'-2'|intcomma }}</b>, and you can find the full invoice, along with instructions for paying by check or card, at <a href="{{ invoice_url }}">{{ invoice_url }}</a>.</p>
 
-      <section class="invoice-metainfo">
-        <div class="invoice-number">{{ invoice.number }}</div>
+    <p>If you have any questions or any corrections that need to be made, please let me know.</p>
 
-        <div class="invoice-sent-date">
-          <time date="{{ invoice.sent_date|date:'c' }}">{{ invoice.sent_date|date }}</time>
-        </div>
-
-        <div class="invoice-due-date">
-          <time date="{{ invoice.due_date|date:'c' }}">{% if invoice.sent_date == invoice.due_date %}Upon Receipt{% else %}{{ invoice.due_date|date }}{% endif %}</time>
-        </div>
-      </section>
-
-      <div class="client-contact-info">
-        {% with r=invoice.recipient %}
-          {{ r.name }}<br>
-          {% if r.organization %}{{ r.organization }}<br>{% endif %}
-          {% if r.address %}{{ r.address|linebreaks }}<br>{% endif %}
-          {% if r.phone %}{{ r.phone }}<br>{% endif %}
-          {{ r.email }}
-        {% endwith %}
-      </div>
-
-      <table class="invoice-items">
-        <thead>
-          <tr>
-            <td>Description</td>
-            <td>Quantity</td>
-            <td>Unit Price</td>
-            <td>Amount</td>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in invoice.items.all %}
-          <tr>
-            <td class="invoice-item-description">{{ item.description }}</td>
-            <td class="invoice-item-quantity">{{ item.quantity|intcomma }} {{ item.units }}</td>
-            <td class="invoice-item-unitprice">${{ item.unit_price|floatformat:-2|intcomma }}</td>
-            <td class="invoice-item-amount">${{ item.amount|floatformat:-2|intcomma }}</td>
-          </tr>
-          {% if item.notes %}
-          <tr>
-            <td class="invoice-item-notes" cols=4>{{ item.notes }}</td>
-          </tr>
-          {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
-
-      <table class="invoice-payment-info">
-        <tbody>
-          <tr class="invoice-total">
-            <td>Total</td>
-            <td>${{ invoice.total_amount|floatformat:-2|intcomma }}</td>
-          </tr>
-          <tr class="invoice-amount-paid">
-            <td>Amount Paid</td>
-            <td>${{ invoice.amount_paid|floatformat:-2|intcomma }}</td>
-          </tr>
-          <tr class="invoice-amount-due">
-            <td>Amount Due</td>
-            <td>${{ invoice.amount_due|floatformat:-2|intcomma }}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <section class="invoice-notes">
-        <header>
-          Additional Notes
-        </header>
-        <p>{{ invoice.additional_notes|linebreaks }}</p>
-      </section>
-
-      <section class="invoice-payment">
-        {% if invoice.amount_due == 0 %}
-        <div class="invoice-paid">Paid</div>
-        {% else %}
-        <form action="/charge" method="POST">{% csrf_token %}
-          <script
-            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-            data-key="{{ settings.STRIPE_PUBLIC_KEY }}"
-            data-image="{{ STATIC_URL}}images/poepublic-bonw-128.png"
-            data-name="{{ invoice.recipient.organization }}"
-            data-description="Invoice"
-            data-amount="{{ stripe_price }}">
-          </script>
-
-          <input type="hidden" name="invoice_id" value="{{ invoice.id }}">
-          <input type="hidden" name="access_code" value="{{ invoice.access_code }}">
-          <input type="hidden" name="amount_paid" value="{{ invoice.amount_due }}">
-          <input type="hidden" name="statement_descriptor" value="POE PUBLIC">
-        </form>
-
-        <span class="alternative">or</span>
-
-        <div>
-          Send checks payable<br>to <em>Mjumbe Poe</em> to:<br>
-          <small><strong>
-            Mjumbe Poe<br>
-            1924 North 10th Street<br>
-            Philadelphia, PA 19122
-          </strong></small>
-        </div>
-        {% endif %}
-      </section>
-    </div>
+    <p>Thanks!<br>- Mjumbe</p>
   </body>
 </html>
