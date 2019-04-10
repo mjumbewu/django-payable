@@ -14,12 +14,17 @@ import decimal
 
 @user_passes_test(lambda u: u.is_superuser)
 def send_invoice(request, pk):
+    invoice = get_object_or_404(
+        Invoice.objects.prefetch_related('items', 'payments'),
+        pk=pk)
+
     if request.method == 'POST':
         sender = request.POST['sender']
         recipients = [r.strip() for r in request.POST['recipients'].split(',')]
         subject = request.POST['subject']
         html = request.POST['html_body']
         text = request.POST['text_body']
+
         send_mail(
             subject,
             text,
@@ -28,14 +33,14 @@ def send_invoice(request, pk):
             html_message=html,
             fail_silently=False,
         )
+
+        invoice.has_been_sent = True
+        invoice.save()
+
         messages.success(request, 'Successfully sent invoice!')
         return redirect('admin:payable_invoice_change', pk)
 
     else:
-        invoice = get_object_or_404(
-            Invoice.objects.prefetch_related('items', 'payments'),
-            pk=pk)
-
         invoice_path = reverse('view-invoice', args=[invoice.pk])
         invoice_context = {
             'invoice': invoice,
