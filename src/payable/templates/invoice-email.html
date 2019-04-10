@@ -10,7 +10,7 @@
     <p style="text-align: right;"><img src="https://s3.amazonaws.com/mjumbewu-public/poepublic-small.png"></p>
     <p>Hi {{ invoice.recipient.name }},</p>
 
-    <p>Find linked below the invoice for the PROJECT_NAME. The amount is <b>${{ invoice.amount_due|floatformat:'-2'|intcomma }}</b>, and you can find the full invoice, along with instructions for paying by check or card, at <a href="{{ invoice_url }}">{{ invoice_url }}</a>.</p>
+    <p>Find linked below the invoice for the {{ invoice.project }}. The amount is <b>${{ invoice.amount_due|floatformat:'-2'|intcomma }}</b>, and you can find the full invoice, along with instructions for paying by check or card, at <a href="{{ invoice_url }}">{{ invoice_url }}</a>.</p>
 
     <p>If you have any questions or any corrections that need to be made, please let me know.</p>
 

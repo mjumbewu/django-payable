@@ -1,1 +1,1 @@
-Invoice for PROJECT_NAME
+Invoice for {{ invoice.project }}
