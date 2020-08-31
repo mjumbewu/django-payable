@@ -62,7 +62,7 @@ class Client (models.Model):
 
 
 class InvoiceItem (ClonableMixin, models.Model):
-    invoice = models.ForeignKey('Invoice', related_name='items')
+    invoice = models.ForeignKey('Invoice', related_name='items', on_delete=models.CASCADE)
 
     description = models.TextField()
     quantity = models.DecimalField(decimal_places=2, max_digits=12)
@@ -78,7 +78,7 @@ class InvoiceItem (ClonableMixin, models.Model):
 
 
 class InvoicePayment (models.Model):
-    invoice = models.ForeignKey('Invoice', related_name='payments')
+    invoice = models.ForeignKey('Invoice', related_name='payments', on_delete=models.CASCADE)
     paid_at = models.DateTimeField()
     amount = models.DecimalField(decimal_places=2, max_digits=12)
     stripe_charge_id = models.TextField(blank=True)
@@ -93,8 +93,8 @@ class Invoice (ClonableMixin, models.Model):
     sent_date = models.DateField()
     due_date = models.DateField()
 
-    sender = models.ForeignKey('Invoicer', related_name='invoices')
-    recipient = models.ForeignKey('Client', related_name='invoices')
+    sender = models.ForeignKey('Invoicer', related_name='invoices', on_delete=models.CASCADE)
+    recipient = models.ForeignKey('Client', related_name='invoices', on_delete=models.CASCADE)
     has_been_sent = models.BooleanField(blank=True, default=False)
     has_been_seen = models.BooleanField(blank=True, default=False)
 

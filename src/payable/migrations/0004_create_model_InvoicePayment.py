@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -18,7 +19,7 @@ class Migration(migrations.Migration):
                 ('paid_at', models.DateTimeField()),
                 ('amount', models.DecimalField(decimal_places=2, max_digits=12)),
                 ('stripe_charge_id', models.TextField(blank=True)),
-                ('invoice', models.ForeignKey(related_name='payments', to='payable.Invoice')),
+                ('invoice', models.ForeignKey(related_name='payments', to='payable.Invoice', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -33,7 +34,7 @@ class Migration(migrations.Migration):
                 ('due_date', models.DateField()),
                 ('discount', models.DecimalField(blank=True, decimal_places=2, max_digits=12, default=0)),
                 ('amount_paid', models.DecimalField(blank=True, decimal_places=2, max_digits=12, default=0)),
-                ('recipient', models.ForeignKey(to='payable.Client')),
+                ('recipient', models.ForeignKey(to='payable.Client', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },
@@ -47,7 +48,7 @@ class Migration(migrations.Migration):
                 ('quantity', models.DecimalField(decimal_places=2, max_digits=12)),
                 ('units', models.TextField(blank=True)),
                 ('unit_price', models.DecimalField(decimal_places=2, max_digits=12)),
-                ('invoice', models.ForeignKey(related_name='items', to='payable.Invoice')),
+                ('invoice', models.ForeignKey(related_name='items', to='payable.Invoice', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },

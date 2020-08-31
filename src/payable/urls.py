@@ -1,4 +1,4 @@
-from django.conf.urls import include, url
+from django.urls import path
 from django.contrib import admin
 from .views import view_invoice, charge_card, send_invoice
 
@@ -7,9 +7,9 @@ urlpatterns = [
     # url(r'^$', 'payable.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^admin/', include(admin.site.urls)),
+    path('admin/', admin.site.urls),
 
-    url(r'^invoice/(?P<pk>\d*)/$', view_invoice, name='view-invoice'),
-    url(r'^invoice/(?P<pk>\d*)/send$', send_invoice, name='send-invoice'),
-    url(r'^charge$', charge_card, name='charge-card'),
+    path('invoice/<int:pk>/', view_invoice, name='view-invoice'),
+    path('invoice/<int:pk>/send', send_invoice, name='send-invoice'),
+    path('charge', charge_card, name='charge-card'),
 ]
