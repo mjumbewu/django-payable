@@ -47,7 +47,7 @@
         {% with r=invoice.recipient %}
           {{ r.name }}<br>
           {% if r.organization %}{{ r.organization }}<br>{% endif %}
-          {% if r.address %}{{ r.address|linebreaks }}<br>{% endif %}
+          {% if r.address %}{{ r.address|linebreaksbr }}<br>{% endif %}
           {% if r.phone %}{{ r.phone }}<br>{% endif %}
           {{ r.email }}
         {% endwith %}
